@@ -1,0 +1,14 @@
+from Tkinter import Tk, Button
+
+def say_hello(event):
+    print 'hello!'
+    print event.widget['text']
+
+root = Tk()
+button1 = Button(root, text='Button 1')
+button1.bind('<Button-1>', say_hello)
+button1.pack()
+button2 = Button(root, text='Button 2')
+button2.bind('<Button-1>', say_hello)
+button2.pack()
+root.mainloop()
