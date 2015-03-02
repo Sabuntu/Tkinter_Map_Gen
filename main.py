@@ -10,6 +10,9 @@ class MapGen(Frame):
 
     photo1 = ""
     photo2 = ""
+	photo3 = ""
+	photo4 = ""
+	
 
     def __init__(self, parent):
         Frame.__init__(self, parent)
@@ -30,24 +33,27 @@ class MapGen(Frame):
 
 
     def buttonType(self, n):
-        if self.type_list[n] == 1:
-            self.type_list[n] = 0
-            self.button_array[n].configure(image = self.photo1)
-            self.button_array[n].image = self.photo1
-            tr = ""
-            for n in range(0,1560):
-                tr += str(self.type_list[n])
-
-            print tr
+		change_image = ""
         if self.type_list[n] == 0:
-            self.type_list[n] = 1
-            self.button_array[n].configure(image = self.photo2)
-            self.button_array[n].image = self.photo2
-            tr = ""
-            for n in range(0,1560):
-                tr += str(self.type_list[n])
+			self.type_list[n] = 3
+			change_image = photo2
+		elif self.type_list[n] == 3:
+			self.type_list[n] = 4
+			change_image = photo3
+		elif self.type_list[n] == 4:
+			self.type_list[n] = 5
+			change_image = photo4
+		elif self.type_list[n] == 5:
+			self.type_list[n] = 0
+			change_image = photo1
+		
+		self.button_array[n].configure(image = change_image)
+		self.button_array[n].image = change_image
+		tr = ""
+		for n in range(0,1560):
+			tr += str(self.type_list[n])
 
-            print tr
+		print tr
 
     def loadFile(self):
         file_type = [('Python files', '*.switch')]
@@ -87,7 +93,9 @@ class MapGen(Frame):
         self.style.theme_use("default")
 
         self.photo1 = tk.PhotoImage(file="sprites/floorSprite.gif")
-        self.photo2 = tk.PhotoImage(file="sprites/wallSprite.gif")
+        self.photo2 = tk.PhotoImage(file="sprites/smallTreasure1.gif")
+		self.photo2 = tk.PhotoImage(file="sprites/smallTreasure2.gif")
+		self.photo2 = tk.PhotoImage(file="sprites/smallTreasure3.gif")
 
         self.frame.pack(fill=BOTH, expand=1)
 
