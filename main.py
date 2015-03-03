@@ -3,7 +3,7 @@ from ttk import Frame, Button, Style
 import Tkinter as tk
 import tkFileDialog
 
-class MapGen(Frame):
+class TreasureGen(Frame):
     frame = []
     button_array = []
     type_list = []
@@ -12,7 +12,10 @@ class MapGen(Frame):
     photo2 = ""
     photo3 = ""
     photo4 = ""
-	
+
+    file_type = [('Switch files', '*.switch')]
+
+    change_image = ""
 
     def __init__(self, parent):
         Frame.__init__(self, parent)
@@ -33,22 +36,22 @@ class MapGen(Frame):
 
 
     def buttonType(self, n):
-        change_image = ""
+
         if self.type_list[n] == 0:
             self.type_list[n] = 3
-            change_image = self.photo2
+            self.change_image = self.photo2
         elif self.type_list[n] == 3:
             self.type_list[n] = 4
-            change_image = self.photo3
+            self.change_image = self.photo3
         elif self.type_list[n] == 4:
             self.type_list[n] = 5
-            change_image = self.photo4
+            self.change_image = self.photo4
         elif self.type_list[n] == 5:
             self.type_list[n] = 0
-            change_image = self.photo1
-		
-        self.button_array[n].configure(image = change_image)
-        self.button_array[n].image = change_image
+            self.change_image = self.photo1
+
+        self.button_array[n].configure(image = self.change_image)
+        self.button_array[n].image = self.change_image
         tr = ""
         for n in range(0,1560):
             tr += str(self.type_list[n])
@@ -56,8 +59,7 @@ class MapGen(Frame):
         print tr
 
     def loadFile(self):
-        file_type = [('Python files', '*.switch')]
-        load_dialog = tkFileDialog.Open(self, filetypes = file_type)
+        load_dialog = tkFileDialog.Open(self, filetypes = self.file_type)
         f = load_dialog.show()
 
         if f != '':
@@ -68,17 +70,28 @@ class MapGen(Frame):
             for n in range(0,1560):
                 self.type_list[n] = int(loadable[n])
 
+            count = 1
+            col = 0
             for n in range(0,1560):
                 print str(self.type_list[n])
+                if not (col == 5 or col == 19 or col == 34):
+                    if self.type_list[n] == 0:
+                        self.change_image = self.photo1
+                    elif self.type_list[n] == 3:
+                        self.change_image = self.photo2
+                    elif self.type_list[n] == 4:
+                        self.change_image = self.photo3
+                    elif self.type_list[n] == 5:
+                        self.change_image = self.photo4
 
-                if self.type_list[n] == 0:
-                    self.button_array[n].configure(image = self.photo1)
-                    self.button_array[n].image = self.photo1
+                    self.button_array[n].configure(image = self.change_image)
+                    self.button_array[n].image = self.change_image
+                col += 1
 
-                if self.type_list[n] == 1:
-                    self.button_array[n].configure(image = self.photo2)
-                    self.button_array[n].image = self.photo2
-
+                if count==40:
+                    col = 0
+                    count = 0
+                count += 1
 
     def readFile(self, filename):
 
@@ -87,16 +100,21 @@ class MapGen(Frame):
         return text
 
     def fileSave(self):
-        f = tkFileDialog.asksaveasfile(mode='w', defaultextension=".txt")
-        if f is None: # asksaveasfile return `None` if dialog closed with "cancel".
+        f = tkFileDialog.asksaveasfile(mode='w', defaultextension=".switch",
+            filetypes = self.file_type)
+        if f is None:
             return
-        text2save = str(text.get(1.0, END)) # starts from `1.0`, not `0.0`
-        f.write(text2save)
-        f.close() # `()` was missing.
+
+        savetext = ""
+        for n in range(0,1560):
+            savetext += str(self.type_list[n])
+
+        f.write(savetext)
+        f.close()
 
     def initUI(self):
         # sets name and style of window
-        self.parent.title("MapGen")
+        self.parent.title("TreasureGen")
         self.style = Style()
         self.style.theme_use("default")
 
@@ -118,7 +136,13 @@ class MapGen(Frame):
                 image = self.photo1, height = 18, width = 18, borderwidth= -1,
                 padx = 0, pady = 0, relief=FLAT))
             self.button_array[n].image = self.photo1
-            self.button_array[n].bind('<Button-1>', self.buttonAction)
+            if not (col == 5 or col == 19 or col == 34):
+                self.button_array[n].bind('<Button-1>', self.buttonAction)
+            else:
+                self.change_image = tk.PhotoImage(file="sprites/rlight.gif")
+                self.button_array[n].configure(image = self.change_image)
+                self.button_array[n].image = self.change_image
+
             self.button_array[n].grid(row=row , column=col)
 
             col += 1
@@ -149,7 +173,7 @@ def main():
 
     root = Tk()
     root.geometry("800x815")
-    app = MapGen(root)
+    app = TreasureGen(root)
     root.mainloop()
 
 
