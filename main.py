@@ -10,8 +10,8 @@ class MapGen(Frame):
 
     photo1 = ""
     photo2 = ""
-	photo3 = ""
-	photo4 = ""
+    photo3 = ""
+    photo4 = ""
 	
 
     def __init__(self, parent):
@@ -33,27 +33,27 @@ class MapGen(Frame):
 
 
     def buttonType(self, n):
-		change_image = ""
+        change_image = ""
         if self.type_list[n] == 0:
-			self.type_list[n] = 3
-			change_image = photo2
-		elif self.type_list[n] == 3:
-			self.type_list[n] = 4
-			change_image = photo3
-		elif self.type_list[n] == 4:
-			self.type_list[n] = 5
-			change_image = photo4
-		elif self.type_list[n] == 5:
-			self.type_list[n] = 0
-			change_image = photo1
+            self.type_list[n] = 3
+            change_image = self.photo2
+        elif self.type_list[n] == 3:
+            self.type_list[n] = 4
+            change_image = self.photo3
+        elif self.type_list[n] == 4:
+            self.type_list[n] = 5
+            change_image = self.photo4
+        elif self.type_list[n] == 5:
+            self.type_list[n] = 0
+            change_image = self.photo1
 		
-		self.button_array[n].configure(image = change_image)
-		self.button_array[n].image = change_image
-		tr = ""
-		for n in range(0,1560):
-			tr += str(self.type_list[n])
+        self.button_array[n].configure(image = change_image)
+        self.button_array[n].image = change_image
+        tr = ""
+        for n in range(0,1560):
+            tr += str(self.type_list[n])
 
-		print tr
+        print tr
 
     def loadFile(self):
         file_type = [('Python files', '*.switch')]
@@ -86,6 +86,14 @@ class MapGen(Frame):
         text = f.read()
         return text
 
+    def fileSave(self):
+        f = tkFileDialog.asksaveasfile(mode='w', defaultextension=".txt")
+        if f is None: # asksaveasfile return `None` if dialog closed with "cancel".
+            return
+        text2save = str(text.get(1.0, END)) # starts from `1.0`, not `0.0`
+        f.write(text2save)
+        f.close() # `()` was missing.
+
     def initUI(self):
         # sets name and style of window
         self.parent.title("MapGen")
@@ -94,8 +102,8 @@ class MapGen(Frame):
 
         self.photo1 = tk.PhotoImage(file="sprites/floorSprite.gif")
         self.photo2 = tk.PhotoImage(file="sprites/smallTreasure1.gif")
-		self.photo2 = tk.PhotoImage(file="sprites/smallTreasure2.gif")
-		self.photo2 = tk.PhotoImage(file="sprites/smallTreasure3.gif")
+        self.photo3 = tk.PhotoImage(file="sprites/smallTreasure2.gif")
+        self.photo4 = tk.PhotoImage(file="sprites/smallTreasure3.gif")
 
         self.frame.pack(fill=BOTH, expand=1)
 
@@ -132,6 +140,10 @@ class MapGen(Frame):
 
         loadButton = Button(self, text="Load Map", command = self.loadFile)
         loadButton.pack(side=RIGHT, padx=5, pady=5)
+
+        saveButton = Button(self, text="Save Map", command = self.fileSave)
+        saveButton.pack(side=RIGHT, padx=5, pady=5)
+
 
 def main():
 
